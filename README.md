@@ -34,4 +34,3 @@ La clase Cadete debería tener un método _TomarPedido_, que tome como parámetr
 * VerDireccionCliente()
 * VerDatosClientes()
 
-
