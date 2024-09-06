@@ -2,7 +2,6 @@
 using Cadete_space;
 using Cadeteria_space;
 using Pedido_space;
-using System.Runtime.Intrinsics.Arm;
 
 List<Cadete> cadetes = LeerCSV.GenerarListaCadetes();
 Cadeteria cadeteria = LeerCSV.GenerarCadeteria();
@@ -11,8 +10,10 @@ int accion;
 int formAsig;
 List<Pedido>pedidos = null;
 bool seguir = true;
+bool hayAsignados = false;
 
 cadeteria.ActualizarCadetes(cadetes);
+Console.Clear();
 while(seguir)
 {
     do
@@ -43,6 +44,7 @@ while(seguir)
                 {
                     cadeteria.AsignarPedidosManual(pedidos);
                 }
+                hayAsignados = true;
             }
             else
             {
@@ -55,6 +57,16 @@ while(seguir)
             break;
 
         case 4:
+            if(hayAsignados)
+            {
+                cadeteria = Accion.ReasignarPedidos(cadeteria);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("ningún cadete tiene pedidos");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
             break;
 
         case 5:

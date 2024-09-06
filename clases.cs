@@ -182,5 +182,51 @@ namespace Clases
 
             return pedidos;
         }
+            public static Cadeteria ReasignarPedidos(Cadeteria cadeteria)
+            {
+                int IdC, nroP, IdCR, indP;
+                bool s = false;
+                Console.WriteLine("Cadete/pedidos:");
+                foreach(Cadete c in cadeteria.ListaCadetes)
+                {
+                    Console.WriteLine($"{c.Id}. {c.Nombre}\n");
+                    Visual.VerPedidos(c.ListadoPedidos);
+                }
+
+                do
+                {
+                    Console.Write("Cadete: ");
+                }while(!int.TryParse(Console.ReadLine(), out IdC) || IdC < 0 || IdC >= cadeteria.ListaCadetes.Count());
+                
+                s = false;
+                do
+                {
+                    indP = 0;
+                    Console.Write("Pedido: ");
+                    if(int.TryParse(Console.ReadLine(), out nroP))
+                    {
+                        foreach(Pedido p in cadeteria.ListaCadetes[IdC].ListadoPedidos)
+                        {
+                            if(p.Nro == nroP)
+                            {
+                                s = true;
+                                break;
+                            }
+                            indP++;
+                        }
+                    }
+                }while(!s);
+
+                do
+                {
+                    Console.Write("reasignar a cadete: ");
+                }while(!int.TryParse(Console.ReadLine(), out IdCR) || IdCR < 0 || IdCR >= cadeteria.ListaCadetes.Count() || IdCR == IdC);
+
+                cadeteria.ListaCadetes[IdCR].ListadoPedidos.Add(cadeteria.ListaCadetes[IdC].ListadoPedidos[indP]);
+                cadeteria.ListaCadetes[IdC].ListadoPedidos.Remove(cadeteria.ListaCadetes[IdC].ListadoPedidos[indP]);
+
+                return cadeteria;
+            }
+
     }
 }
