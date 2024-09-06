@@ -56,6 +56,39 @@ namespace Clases
                 }
             }
         }
+
+        public static void VerPedidos(List<Pedido> pedidos)
+        {
+            if(pedidos != null)
+            {
+                Console.WriteLine("Pedidos:\n");
+                foreach(Pedido p in pedidos)
+                {
+                    Console.Write(p.Nro + ". " + p.Obs);
+                    if(p.Estado == estados.pendiente)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine(" Pendiente");
+                    }
+                    else if(p.Estado == estados.entregado)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine(" Entregado");
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(" Cancelado");
+                    }
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine();
+                }
+            }
+            else
+            {
+                Console.WriteLine("no hay pedidos aún\n");
+            }
+        }
     }
 
     public static class Accion
@@ -96,7 +129,58 @@ namespace Clases
             }while(string.Equals(r,"s"));
 
             return pedidos;
+        }
 
+        public static List<Pedido> CambiarEstadoPedido(List<Pedido> pedidos)
+        {
+            int nroP, i=0, est;
+            bool hay = false;
+            Visual.VerPedidos(pedidos);
+            do
+            {
+                i=0;
+                Console.Write("\nnro de pedido: ");
+                int.TryParse(Console.ReadLine(), out nroP);
+                foreach(Pedido p in pedidos)
+                {
+                    if(p.Nro == nroP)
+                    {
+                        hay = true;
+                        break;
+                    }
+                    i++;
+                }
+            }while(!hay);
+
+            Console.WriteLine("estado del pedido:\n1. Pendiente\n2. Entregado\n3. Cancelado");
+            do
+            {
+                if(!int.TryParse(Console.ReadLine(), out est) || est<1 || est>3)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Fallo");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    break;
+                }
+            }while(true);
+
+            switch(est)
+            {
+                case 1:
+                    pedidos[i].Estado = estados.pendiente;
+                    break;
+                case 2:
+                    pedidos[i].Estado = estados.entregado;
+                    break;
+                case 3:
+                    pedidos[i].Estado = estados.cancelado;
+                    break;
+            }
+
+            return pedidos;
         }
     }
 }

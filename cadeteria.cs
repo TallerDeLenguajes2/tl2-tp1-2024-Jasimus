@@ -1,6 +1,8 @@
 using Pedido_space;
 using Cadete_space;
 using System.Drawing;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 namespace Cadeteria_space
 {
     public class Cadeteria
@@ -38,6 +40,10 @@ namespace Cadeteria_space
 
         public void AsignarPedidosManual(List<Pedido> pedidos)
         {
+            int idC;
+            int numP;
+            bool s = true;
+            string d;
             Console.WriteLine("Pedidos:\n");
             foreach(Pedido p in pedidos)
             {
@@ -60,11 +66,39 @@ namespace Cadeteria_space
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine();
             }
-
-            Console.WriteLine("\nCadetes:\n");
-            foreach(Cadete c in listaCadetes)
+            while(s)
             {
-                Console.WriteLine(c.Id + ". " + c.Nombre);
+                Console.WriteLine("\nCadetes:\n");
+                foreach(Cadete c in listaCadetes)
+                {
+                    Console.WriteLine(c.Id + ". " + c.Nombre);
+                }
+                do
+                {
+                    Console.Write("\nID cadete: ");
+                }while(!int.TryParse(Console.ReadLine(), out idC) || idC < 0 || idC > listaCadetes.Count-1);
+
+                do
+                {
+                    Console.Write("\nNúmero pedido: ");
+                }while(!int.TryParse(Console.ReadLine(), out numP) || numP < 1 || numP > pedidos.Count);
+
+                listaCadetes[idC].ListadoPedidos.Add(pedidos[numP-1]);
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"se asignó el pedido \"{pedidos[numP-1].Obs}\" al cadete {listaCadetes[idC].Nombre}");
+                Console.ForegroundColor = ConsoleColor.White;
+
+                do
+                {
+                    Console.WriteLine("\nDesea asignar otro pedido?\ns. Si\nn. No");
+                    d = Console.ReadLine();
+                }while(!string.Equals(d, "s") && !string.Equals(d, "n"));
+
+                if(string.Equals(d, "n"))
+                {
+                    s = false;
+                }
             }
         }
     }

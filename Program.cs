@@ -17,9 +17,9 @@ while(seguir)
 {
     do
     {
-        Console.WriteLine("qué acción desea hacer:\n\t1. dar de alta pedidos\n\t2. asignar pedidos a cadetes\n\t3. cambiar estado de pedido\n\t4. reasignar pedidos");
+        Console.WriteLine("qué acción desea hacer:\n\t1. dar de alta pedidos\n\t2. asignar pedidos a cadetes\n\t3. cambiar estado de pedido\n\t4. reasignar pedidos\n\t5. ver listado de Cadetes\n\t6. ver listado de pedidos\n\t*. salir");
         accionS = Console.ReadLine();
-    }while(!int.TryParse(accionS, out accion) || accion <= 0 || accion > 4);
+    }while(!int.TryParse(accionS, out accion) || accion <= 0);
 
     switch(accion)
     {
@@ -49,10 +49,24 @@ while(seguir)
                 Console.WriteLine("no hay pedidos");
             }
             break;
+
+        case 3:
+            pedidos = Accion.CambiarEstadoPedido(pedidos);
+            break;
+
+        case 4:
+            break;
+
+        case 5:
+            Visual.VerCadetes(cadeteria);
+            break;
+        
+        case 6:
+            Visual.VerPedidos(pedidos);
+            break;
+        default:
+            seguir = false;
+            break;
     }
 }
-
-
-
-// Visual.VerCadetes(cadeteria);
 
