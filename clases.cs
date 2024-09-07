@@ -57,7 +57,7 @@ namespace Clases
             }
         }
 
-        public static void VerPedidos(List<Pedido> pedidos)
+        public static bool VerPedidos(List<Pedido> pedidos)
         {
             if(pedidos != null)
             {
@@ -65,38 +65,46 @@ namespace Clases
                 foreach(Pedido p in pedidos)
                 {
                     Console.Write(p.Nro + ". " + p.Obs);
-                    if(p.Estado == estados.pendiente)
+                    switch(p.Estado)
                     {
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine(" Pendiente");
-                    }
-                    else if(p.Estado == estados.entregado)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine(" Entregado");
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(" Cancelado");
+                        case estados.pendiente:
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write(" Pendiente");
+                            break;
+
+                        case estados.entregado:
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(" Entregado");
+                            break;
+                        
+                        case estados.cancelado:
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write(" Cancelado");
+                            break;
+
+                        case estados.asignado:
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.Write(" Asignado");
+                            break;
                     }
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine();
+                    Console.WriteLine("\n");
                 }
+                return true;
             }
             else
             {
                 Console.WriteLine("no hay pedidos aún\n");
+                return false;
             }
         }
     }
 
     public static class Accion
     {
-        public static List<Pedido> AgregarPedidos()
+        public static List<Pedido> AgregarPedidos(List<Pedido> pedidos)
         {
             string r;
-            List<Pedido> pedidos = new List<Pedido>();
             do
             {
                 Console.WriteLine("Desea agregar un pedido nuevo?\ns. Si\nn. No");
@@ -135,49 +143,52 @@ namespace Clases
         {
             int nroP, i=0, est;
             bool hay = false;
-            Visual.VerPedidos(pedidos);
-            do
+            if(Visual.VerPedidos(pedidos))
             {
-                i=0;
-                Console.Write("\nnro de pedido: ");
-                int.TryParse(Console.ReadLine(), out nroP);
-                foreach(Pedido p in pedidos)
+
+                do
                 {
-                    if(p.Nro == nroP)
+                    i=0;
+                    Console.Write("\nnro de pedido: ");
+                    int.TryParse(Console.ReadLine(), out nroP);
+                    foreach(Pedido p in pedidos)
                     {
-                        hay = true;
+                        if(p.Nro == nroP)
+                        {
+                            hay = true;
+                            break;
+                        }
+                        i++;
+                    }
+                }while(!hay);
+
+                Console.WriteLine("estado del pedido:\n1. Pendiente\n2. Entregado\n3. Cancelado");
+                do
+                {
+                    if(!int.TryParse(Console.ReadLine(), out est) || est<1 || est>3)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Fallo");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
                         break;
                     }
-                    i++;
-                }
-            }while(!hay);
+                }while(true);
 
-            Console.WriteLine("estado del pedido:\n1. Pendiente\n2. Entregado\n3. Cancelado");
-            do
-            {
-                if(!int.TryParse(Console.ReadLine(), out est) || est<1 || est>3)
+                switch(est)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Fallo");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    case 1:
+                        pedidos[i].Estado = estados.pendiente;
+                        break;
+                    case 2:
+                        pedidos[i].Estado = estados.entregado;
+                        break;
+                    case 3:
+                        pedidos[i].Estado = estados.cancelado;
+                        break;
                 }
-                else
-                {
-                    break;
-                }
-            }while(true);
-
-            switch(est)
-            {
-                case 1:
-                    pedidos[i].Estado = estados.pendiente;
-                    break;
-                case 2:
-                    pedidos[i].Estado = estados.entregado;
-                    break;
-                case 3:
-                    pedidos[i].Estado = estados.cancelado;
-                    break;
             }
 
             return pedidos;
@@ -226,6 +237,36 @@ namespace Clases
                 cadeteria.ListaCadetes[IdC].ListadoPedidos.Remove(cadeteria.ListaCadetes[IdC].ListadoPedidos[indP]);
 
                 return cadeteria;
+            }
+
+            public static void CalcularInforme(Cadeteria cadeteria)
+            {
+                int cantTotal = 0;
+                float precioPedido = 10000;
+                double ganancia;
+
+                foreach(Cadete c in cadeteria.ListaCadetes)
+                {
+                    cantTotal += c.CantidadEntregas();
+                }
+                ganancia = precioPedido * cantTotal;
+
+                foreach(Cadete c in cadeteria.ListaCadetes)
+                {
+                    ganancia -= c.JornalACobrar();
+                }
+
+                Console.WriteLine($"Ganancia Total: ${ganancia}\n");
+                Console.WriteLine("Cantidad de envíos de cada cadete:\n");
+                foreach(Cadete c in cadeteria.ListaCadetes)
+                {
+                    System.Console.Write($"{c.Id}. {c.Nombre}");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    System.Console.Write($" {c.CantidadEntregas()}\n");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+
+                System.Console.WriteLine($"\nCantidad total de entregas: {cantTotal}");
             }
 
     }

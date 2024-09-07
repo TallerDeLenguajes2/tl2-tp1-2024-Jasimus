@@ -42,3 +42,5 @@ pedidos(int nro, string obs, string nombreCliente, string dirCliente, string tel
 cliente(string nombre, string direccion, string datosReferenciaDireccion)
 
 
+## Curiosidad de Linq
+El método _Find_ de **IEnumerable** devuelve una referencia a un elemento de la instancia a la que se lo aplica. (No probé, pero me imagino que será igual con los demás métodos: la devolución de una referencia y no de una copia).

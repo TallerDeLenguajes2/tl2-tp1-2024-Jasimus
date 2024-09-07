@@ -8,12 +8,13 @@ Cadeteria cadeteria = LeerCSV.GenerarCadeteria();
 string accionS;
 int accion;
 int formAsig;
-List<Pedido>pedidos = null;
+List<Pedido>pedidos = new List<Pedido>();
 bool seguir = true;
 bool hayAsignados = false;
 
 cadeteria.ActualizarCadetes(cadetes);
 Console.Clear();
+Console.ForegroundColor = ConsoleColor.White;
 while(seguir)
 {
     do
@@ -25,7 +26,7 @@ while(seguir)
     switch(accion)
     {
         case 1:
-            pedidos = Accion.AgregarPedidos();
+            pedidos = Accion.AgregarPedidos(pedidos);
             break;
 
         case 2:
@@ -79,6 +80,8 @@ while(seguir)
         default:
             seguir = false;
             break;
+
     }
 }
+Accion.CalcularInforme(cadeteria);
 

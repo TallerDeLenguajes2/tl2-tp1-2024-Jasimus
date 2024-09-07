@@ -35,6 +35,7 @@ namespace Pedido_space
     {
         pendiente = 0,
         entregado = 1,
-        cancelado = 2
+        cancelado = 2,
+        asignado = 3
     }
 }

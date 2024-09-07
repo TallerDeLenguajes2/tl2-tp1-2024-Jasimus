@@ -3,6 +3,7 @@ using Cadete_space;
 using System.Drawing;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using Clases;
 namespace Cadeteria_space
 {
     public class Cadeteria
@@ -44,28 +45,8 @@ namespace Cadeteria_space
             int numP;
             bool s = true;
             string d;
-            Console.WriteLine("Pedidos:\n");
-            foreach(Pedido p in pedidos)
-            {
-                Console.Write(p.Nro + ". " + p.Obs);
-                if(p.Estado == estados.pendiente)
-                {
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine(" Pendiente");
-                }
-                else if(p.Estado == estados.entregado)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine(" Entregado");
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(" Cancelado");
-                }
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine();
-            }
+            Pedido p;
+            Visual.VerPedidos(pedidos);
             while(s)
             {
                 Console.WriteLine("\nCadetes:\n");
@@ -81,9 +62,25 @@ namespace Cadeteria_space
                 do
                 {
                     Console.Write("\nNúmero pedido: ");
-                }while(!int.TryParse(Console.ReadLine(), out numP) || numP < 1 || numP > pedidos.Count);
-
-                listaCadetes[idC].ListadoPedidos.Add(pedidos[numP-1]);
+                    if(int.TryParse(Console.ReadLine(), out numP) && pedidos.Any(p => p.Nro == numP))
+                    {
+                        p = pedidos.Find(p => p.Nro == numP);
+                        if(p.Estado == estados.asignado)
+                        {
+                            System.Console.WriteLine("El pedido ya está asignado a otro cadete");
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("El pedido no existe");
+                    }
+                }while(true);
+                p.Estado = estados.asignado;
+                listaCadetes[idC].ListadoPedidos.Add(p);
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"se asignó el pedido \"{pedidos[numP-1].Obs}\" al cadete {listaCadetes[idC].Nombre}");

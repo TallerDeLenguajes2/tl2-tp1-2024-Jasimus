@@ -53,5 +53,11 @@ namespace Cadete_space
             }
         }
 
+        public int CantidadEntregas()
+        {
+            int cant = ListadoPedidos.Where(p => p.Estado == estados.entregado).Count();
+            return cant;
+        }
+
     }
 }
