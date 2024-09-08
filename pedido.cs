@@ -1,6 +1,6 @@
-using Cadete_space;
 using Cliente_space;
-namespace Pedidos_space
+using Cadete_space;
+namespace Pedido_space
 {
     public class Pedido
     {
@@ -13,31 +13,59 @@ namespace Pedidos_space
         public int Nro { get => nro; set => nro = value; }
         public string? Obs { get => obs; set => obs = value; }
         public estados Estado { get => estado; set => estado = value; }
-        public Cadete Cadete { get => cadete; }
+        public Cadete Cadete { get => cadete; set => cadete = value; }
+
+        public Pedido(int nro, string obs, string nombreCliente, string dirCliente, string telCliente, string datosReferenciaDireccion)
+        {
+            this.nro = nro;
+            this.obs = obs;
+            cliente = new Cliente(nombreCliente, dirCliente, telCliente, datosReferenciaDireccion);
+        }
 
         public void VerDireccionCliente()
         {
-
+            Console.WriteLine(cliente.Direccion);
         }
 
         public void VerDatosCliente()
         {
-
+            Console.WriteLine($"Nombre: {cliente.Nombre}\nTeléfono: {cliente.Telefono}\nDirección: {cliente.Direccion}\nDatos de referencia dirección: {cliente.DatosReferenciaDireccion}");
         }
 
-        public void TomarPedido(int nro, string obs, string nombreC, string direcc, string tel, string drd)
+        public void AsignarCadete(List<Cadete> cadetes)
         {
-            Cliente cliente = new Cliente();
-            cliente.Nombre = nombreC;
-            cliente.Direccion = direcc;
-            cliente.Telefono = tel;
-            cliente.DatosReferenciaDireccion = drd;
-            this.cliente = cliente;
-            Nro = nro;
-            Obs = obs;
+            Random rand = new Random();
+            int i = rand.Next(0, cadetes.Count());
+            Cadete = cadetes[i];
+            estado = estados.asignado;
+        }
 
-            Cadete cadete = new Cadete();
-            
+        public void VerEstado()
+        {
+            switch(Estado)
+                    {
+                        case estados.pendiente:
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write(" Pendiente");
+                            break;
+
+                        case estados.entregado:
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(" Entregado");
+                            break;
+                        
+                        case estados.cancelado:
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write(" Cancelado");
+                            break;
+
+                        case estados.asignado:
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.Write(" Asignado");
+                            break;
+                    }
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("\n");
         }
     }
 
@@ -45,6 +73,7 @@ namespace Pedidos_space
     {
         pendiente = 0,
         entregado = 1,
-        cancelado = 2
+        cancelado = 2,
+        asignado = 3
     }
 }

@@ -49,10 +49,15 @@ namespace Clases
                 Console.WriteLine("Id: "+c.Id);
                 Console.WriteLine("Nombre: "+c.Nombre);
                 Console.WriteLine("Teléfono: "+c.Telefono);
-                Console.WriteLine("Pedidos:");
-                foreach(Pedido p in c.ListadoPedidos)
+                if(cad.Pedidos != null)
                 {
-                    Console.WriteLine("\t"+p.Nro);
+                    Console.WriteLine("Pedidos:");
+                    foreach(Pedido p in cad.Pedidos.Where(ped => ped.Cadete == c))
+                    {
+                        Console.Write($"\t{p.Nro}. {p.Obs} ");
+                        p.VerEstado();
+                    }
+                    Console.WriteLine();
                 }
             }
         }
@@ -97,6 +102,22 @@ namespace Clases
                 Console.WriteLine("no hay pedidos aún\n");
                 return false;
             }
+        }
+
+
+        public static void VerJornalACobrar(Cadeteria cadeteria)
+        {
+            int IdC;
+            VerCadetes(cadeteria);
+            do
+            {
+                System.Console.Write("ingrese el Id del cadete: ");
+            }while(!int.TryParse(Console.ReadLine(), out IdC) || IdC < 0 || IdC >= cadeteria.ListaCadetes.Count());
+
+            System.Console.WriteLine($"Cadete:\n{IdC}. {cadeteria.ListaCadetes[IdC]}");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            System.Console.WriteLine($"Jornal a cobrar: {cadeteria.JornalACobrar(IdC)}");
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 
@@ -195,13 +216,17 @@ namespace Clases
         }
             public static Cadeteria ReasignarPedidos(Cadeteria cadeteria)
             {
-                int IdC, nroP, IdCR, indP;
-                bool s = false;
-                Console.WriteLine("Cadete/pedidos:");
+                int IdC, nroP, IdCR;
+                Pedido pedido = null;
+                Console.WriteLine("Pedidos/Cadete:");
                 foreach(Cadete c in cadeteria.ListaCadetes)
                 {
-                    Console.WriteLine($"{c.Id}. {c.Nombre}\n");
-                    Visual.VerPedidos(c.ListadoPedidos);
+                    Console.WriteLine($"{c.Id}. {c.Nombre}");
+                    foreach(Pedido p in PedidosCadete(cadeteria, c.Id))
+                    {
+                        Console.Write($"{p.Nro}. {p.Obs} ");
+                        p.VerEstado();
+                    }
                 }
 
                 do
@@ -209,32 +234,21 @@ namespace Clases
                     Console.Write("Cadete: ");
                 }while(!int.TryParse(Console.ReadLine(), out IdC) || IdC < 0 || IdC >= cadeteria.ListaCadetes.Count());
                 
-                s = false;
                 do
                 {
-                    indP = 0;
                     Console.Write("Pedido: ");
                     if(int.TryParse(Console.ReadLine(), out nroP))
                     {
-                        foreach(Pedido p in cadeteria.ListaCadetes[IdC].ListadoPedidos)
-                        {
-                            if(p.Nro == nroP)
-                            {
-                                s = true;
-                                break;
-                            }
-                            indP++;
-                        }
+                        pedido = PedidosCadete(cadeteria, IdC).Single(ped => ped.Nro == nroP);
                     }
-                }while(!s);
+                }while(pedido == null);
 
                 do
                 {
                     Console.Write("reasignar a cadete: ");
                 }while(!int.TryParse(Console.ReadLine(), out IdCR) || IdCR < 0 || IdCR >= cadeteria.ListaCadetes.Count() || IdCR == IdC);
 
-                cadeteria.ListaCadetes[IdCR].ListadoPedidos.Add(cadeteria.ListaCadetes[IdC].ListadoPedidos[indP]);
-                cadeteria.ListaCadetes[IdC].ListadoPedidos.Remove(cadeteria.ListaCadetes[IdC].ListadoPedidos[indP]);
+                pedido.Cadete = cadeteria.ListaCadetes[IdCR];
 
                 return cadeteria;
             }
@@ -247,13 +261,13 @@ namespace Clases
 
                 foreach(Cadete c in cadeteria.ListaCadetes)
                 {
-                    cantTotal += c.CantidadEntregas();
+                    cantTotal += c.CantidadEntregas(cadeteria.Pedidos);
                 }
                 ganancia = precioPedido * cantTotal;
 
                 foreach(Cadete c in cadeteria.ListaCadetes)
                 {
-                    ganancia -= c.JornalACobrar();
+                    ganancia -= cadeteria.JornalACobrar(c.Id);
                 }
 
                 Console.WriteLine($"Ganancia Total: ${ganancia}\n");
@@ -262,11 +276,16 @@ namespace Clases
                 {
                     System.Console.Write($"{c.Id}. {c.Nombre}");
                     Console.ForegroundColor = ConsoleColor.Green;
-                    System.Console.Write($" {c.CantidadEntregas()}\n");
+                    System.Console.Write($" {c.CantidadEntregas(cadeteria.Pedidos)}\n");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
 
                 System.Console.WriteLine($"\nCantidad total de entregas: {cantTotal}");
+            }
+            public static List<Pedido> PedidosCadete(Cadeteria cadeteria, int IdC)
+            {
+                List<Pedido> ped = cadeteria.Pedidos.Where(p => p.Cadete.Id == IdC).ToList();
+                return ped;
             }
 
     }
