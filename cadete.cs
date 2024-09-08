@@ -1,3 +1,4 @@
+using Pedidos_space;
 namespace Cadete_space
 {
     public class Cadete

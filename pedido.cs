@@ -41,10 +41,10 @@ namespace Pedidos_space
         }
     }
 
-    enum estados
+    public enum estados
     {
-        pendiente 0,
-        entregado 1,
-        cancelado 2
+        pendiente = 0,
+        entregado = 1,
+        cancelado = 2
     }
 }
