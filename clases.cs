@@ -114,7 +114,7 @@ namespace Clases
                 System.Console.Write("ingrese el Id del cadete: ");
             }while(!int.TryParse(Console.ReadLine(), out IdC) || IdC < 0 || IdC >= cadeteria.ListaCadetes.Count());
 
-            System.Console.WriteLine($"Cadete:\n{IdC}. {cadeteria.ListaCadetes[IdC]}");
+            System.Console.WriteLine($"Cadete:\n{IdC}. {cadeteria.ListaCadetes[IdC].Nombre}");
             Console.ForegroundColor = ConsoleColor.Yellow;
             System.Console.WriteLine($"Jornal a cobrar: {cadeteria.JornalACobrar(IdC)}");
             Console.ForegroundColor = ConsoleColor.White;

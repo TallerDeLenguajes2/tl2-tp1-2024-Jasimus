@@ -25,7 +25,15 @@ while(seguir)
     switch(accion)
     {
         case 1:
-            cadeteria.Pedidos = Accion.AgregarPedidos(cadeteria.Pedidos);
+            if(cadeteria.Pedidos == null)
+            {
+                List<Pedido> p = new List<Pedido>();
+                cadeteria.Pedidos = Accion.AgregarPedidos(p);
+            }
+            else
+            {
+                cadeteria.Pedidos = Accion.AgregarPedidos(cadeteria.Pedidos);
+            }
             break;
 
         case 2:
@@ -42,7 +50,43 @@ while(seguir)
                 }
                 else
                 {
-                    cadeteria.AsignarPedidosManual();
+                    
+                    int idC;
+                    int numP;
+                    bool s = true;
+                    string d;
+                    Pedido p;
+                    while(s)
+                    {
+                        Visual.VerPedidos(cadeteria.Pedidos);
+                        Console.WriteLine("\nCadetes:\n");
+                        foreach(Cadete c in cadeteria.ListaCadetes)
+                        {
+                            Console.WriteLine(c.Id + ". " + c.Nombre);
+                        }
+                        do
+                        {
+                            Console.Write("\nID cadete: ");
+                        }while(!int.TryParse(Console.ReadLine(), out idC) || idC < 0 || idC > cadeteria.ListaCadetes.Count-1);
+
+                        do
+                        {
+                            Console.Write("\nNúmero pedido: ");
+                        }while(!int.TryParse(Console.ReadLine(), out numP) || !cadeteria.Pedidos.Any(p => p.Nro == numP));
+                        
+                        cadeteria.AsignarCadeteAPedido(idC, numP);
+
+                        do
+                        {
+                            Console.WriteLine("\nDesea asignar otro pedido?\ns. Si\nn. No");
+                            d = Console.ReadLine();
+                        }while(!string.Equals(d, "s") && !string.Equals(d, "n"));
+
+                        if(string.Equals(d, "n"))
+                        {
+                            s = false;
+                        }
+                    }
                 }
                 hayAsignados = true;
             }
