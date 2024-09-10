@@ -44,3 +44,7 @@ cliente(string nombre, string direccion, string datosReferenciaDireccion)
 
 ## Curiosidad de Linq
 El método _Find_ de **IEnumerable** devuelve una referencia a un elemento de la instancia a la que se lo aplica. (No probé, pero me imagino que será igual con los demás métodos: la devolución de una referencia y no de una copia).
+
+## Diseño de clase AccesoADatos
+Esta clase se usa para derivar dos nuevas clases: **AccesoCSV** y **AccesoJSON**. Ambas clases deben tener un método que lea el archivo de cadetes, y que devuelva la lista de cadetes correspondiente, por lo que pondría un método _ObtenerCadetes_ en la clases base. Este método no estará definido fuera de las clases derivadas, por lo que el método en la clase base será un método <ins>virtual</ins>.
+Ambas clases derivadas tienen un campo llamado _url_, que tendría la dirección del archivo al que hay que acceder, por lo que pondría dentro de la clase base un campo llamado _url_ que será heredado por las dos clases derivadas, y el constructor de cada clase recibe como parámetro el nombre del archivo, que será igual para el .csv y el .json.

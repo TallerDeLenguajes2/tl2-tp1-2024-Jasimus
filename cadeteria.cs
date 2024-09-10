@@ -49,8 +49,11 @@ namespace Cadeteria_space
         public double JornalACobrar(int IdCadete)
         {
             double jornal = 2000;
-            int cant = pedidos.Count(p => p.Estado == estados.entregado && p.Cadete.Id == IdCadete);
-            jornal += 500*cant;
+            if(pedidos != null)
+            {
+                int cant = pedidos.Count(p => p.Estado == estados.entregado && p.Cadete.Id == IdCadete);
+                jornal += 500*cant;
+            }
 
             return jornal;
         }

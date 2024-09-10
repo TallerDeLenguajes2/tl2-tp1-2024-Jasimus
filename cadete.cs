@@ -34,7 +34,11 @@ namespace Cadete_space
 
         public int CantidadEntregas(List<Pedido> pedidos)
         {
-            int cant = pedidos.Where(p => p.Estado == estados.entregado && p.Cadete.Id == Id).Count();
+            int cant = 0;
+            if(pedidos != null)
+            {
+                cant = pedidos.Where(p => p.Estado == estados.entregado && p.Cadete.Id == Id).Count();
+            }
             return cant;
         }
     }

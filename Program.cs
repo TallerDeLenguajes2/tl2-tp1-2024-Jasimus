@@ -3,7 +3,10 @@ using Cadete_space;
 using Cadeteria_space;
 using Pedido_space;
 
-List<Cadete> cadetes = LeerCSV.GenerarListaCadetes();
+string nombreArchivoCadetes = "cadetes";
+AccesoCSV accesoCSV = new AccesoCSV(nombreArchivoCadetes);
+AccesoJSON accesoJSON = new AccesoJSON(nombreArchivoCadetes);
+List<Cadete> cadetes = accesoJSON.GenerarListaCadetes();
 Cadeteria cadeteria = LeerCSV.GenerarCadeteria();
 string accionS;
 int accion;

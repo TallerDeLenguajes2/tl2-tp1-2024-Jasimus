@@ -1,44 +1,13 @@
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Cadete_space;
 using Cadeteria_space;
 using Pedido_space;
 
 namespace Clases
 {
-    public static class LeerCSV
-    {
-        public static List<Cadete> GenerarListaCadetes()
-        {
-            string path = "./CSV_cadete.csv";
-            List<Cadete> cadetes = new List<Cadete>();
-            using(StreamReader reader = new StreamReader(path))
-            {
-                string line;
-                while((line = reader.ReadLine()) != null)
-                {
-                    string[] campos = line.Split(',');
-                    Cadete cadete = new Cadete(int.Parse(campos[0]), campos[1], campos[2], campos[3]);
-                    cadetes.Add(cadete);
-                }
-            }
-
-            return cadetes;
-        }
-
-        public static Cadeteria GenerarCadeteria()
-        {
-            string path = "./CSV_cadeteria.csv";
-            List<string> lines = new List<string>(File.ReadAllLines(path));
-            Random rand = new Random();
-            int i = rand.Next(3);
-
-            string[] campos = lines[i].Split(',');
-
-            Cadeteria cad = new Cadeteria(campos[0], campos[1]);
-
-            return cad;
-        }
-    }
 
     public static class Visual
     {
@@ -287,6 +256,82 @@ namespace Clases
                 List<Pedido> ped = cadeteria.Pedidos.Where(p => p.Cadete.Id == IdC).ToList();
                 return ped;
             }
+    }
 
+    public class AccesoADatos
+    {
+        protected string url;
+        public virtual List<Cadete> GenerarListaCadetes()
+        {
+            return new List<Cadete>();
+        }
+    }
+
+    public class AccesoCSV : AccesoADatos
+    {
+        public AccesoCSV(string nombreArchivo)
+        {
+            url = "./" + nombreArchivo + ".csv";
+        }
+        public override List<Cadete> GenerarListaCadetes()
+        {
+            List<Cadete> cadetes = new List<Cadete>();
+            using(StreamReader reader = new StreamReader(url))
+            {
+                string line;
+                while((line = reader.ReadLine()) != null)
+                {
+                    string[] campos = line.Split(',');
+                    Cadete cadete = new Cadete(int.Parse(campos[0]), campos[1], campos[2], campos[3]);
+                    cadetes.Add(cadete);
+                }
+            }
+
+            return cadetes;
+        }
+    }
+
+    public class AccesoJSON : AccesoADatos
+    {
+        public AccesoJSON(string nombreArchivo)
+        {
+            url = "./" + nombreArchivo + ".json";
+        }
+
+        public override List<Cadete> GenerarListaCadetes()
+        {
+            string? cadS = null;
+            if(File.Exists(url))
+            {
+                cadS = File.ReadAllText(url);
+            }
+            List<Cadete> cadetes = JsonSerializer.Deserialize <List<Cadete>> (cadS);
+
+            return cadetes;
+        }
+    }
+    public static class LeerCSV
+    {
+        public static Cadeteria GenerarCadeteria()
+        {
+            string path = "./CSV_cadeteria.csv";
+            List<string> lines = new List<string>(File.ReadAllLines(path));
+            Random rand = new Random();
+            int i = rand.Next(3);
+
+            string[] campos = lines[i].Split(',');
+
+            Cadeteria cad = new Cadeteria(campos[0], campos[1]);
+
+            return cad;
+        }
+
+        public static void EscribirEnJson(List<Cadete> cadetes, string nombreArchivo)
+        {
+            string url = "./" + nombreArchivo + ".json";
+            string c = JsonSerializer.Serialize(cadetes);
+
+            File.WriteAllText(url, c);
+        }
     }
 }
