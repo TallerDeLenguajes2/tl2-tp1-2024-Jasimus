@@ -6,17 +6,31 @@ using Pedido_space;
 string nombreArchivoCadetes = "cadetes";
 AccesoCSV accesoCSV = new AccesoCSV(nombreArchivoCadetes);
 AccesoJSON accesoJSON = new AccesoJSON(nombreArchivoCadetes);
-List<Cadete> cadetes = accesoJSON.GenerarListaCadetes();
+List<Cadete> cadetes = null;
 Cadeteria cadeteria = LeerCSV.GenerarCadeteria();
 string accionS;
-int accion;
-int formAsig;
+int accion, formAsig, archivo;
 bool seguir = true;
 bool hayAsignados = false;
 
+
+Console.Clear();
+do
+{
+    Console.WriteLine("desde qué archivo desea cargar los cadetes?\n1. CSV\n2. JSON");
+}while(!int.TryParse(Console.ReadLine(), out archivo) || archivo > 2 || archivo < 1);
+
+if(archivo == 1)
+{
+    cadetes = accesoCSV.GenerarListaCadetes();
+}
+else
+{
+    cadetes = accesoJSON.GenerarListaCadetes();
+}
+
 cadeteria.ActualizarCadetes(cadetes);
 Console.Clear();
-Console.ForegroundColor = ConsoleColor.White;
 while(seguir)
 {
     do

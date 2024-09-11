@@ -21,6 +21,9 @@ namespace Cadete_space
             Telefono = tel;
         }
 
+        public Cadete()
+        {}
+
         // public void PedidoEntregado()
         // {
         //     foreach(Pedido p in ListadoPedidos)

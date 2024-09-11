@@ -26,8 +26,8 @@ namespace Clases
                         Console.Write($"\t{p.Nro}. {p.Obs} ");
                         p.VerEstado();
                     }
-                    Console.WriteLine();
                 }
+                Console.WriteLine();
             }
         }
 
