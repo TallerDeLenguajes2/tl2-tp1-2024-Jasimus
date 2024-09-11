@@ -6,7 +6,6 @@ using Pedido_space;
 string nombreArchivoCadetes = "cadetes";
 AccesoCSV accesoCSV = new AccesoCSV(nombreArchivoCadetes);
 AccesoJSON accesoJSON = new AccesoJSON(nombreArchivoCadetes);
-List<Cadete> cadetes = null;
 Cadeteria cadeteria = LeerCSV.GenerarCadeteria();
 string accionS;
 int accion, formAsig, archivo;
@@ -22,14 +21,13 @@ do
 
 if(archivo == 1)
 {
-    cadetes = accesoCSV.GenerarListaCadetes();
+    cadeteria.ListaCadetes = accesoCSV.GenerarListaCadetes();
 }
 else
 {
-    cadetes = accesoJSON.GenerarListaCadetes();
+    cadeteria.ListaCadetes = accesoJSON.GenerarListaCadetes();
 }
 
-cadeteria.ActualizarCadetes(cadetes);
 Console.Clear();
 while(seguir)
 {
@@ -91,7 +89,11 @@ while(seguir)
                             Console.Write("\nNúmero pedido: ");
                         }while(!int.TryParse(Console.ReadLine(), out numP) || !cadeteria.Pedidos.Any(p => p.Nro == numP));
                         
-                        cadeteria.AsignarCadeteAPedido(idC, numP);
+                        Pedido pedido = cadeteria.AsignarCadeteAPedido(idC, numP);
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"se asignó el pedido \"{pedido.Obs}\" al cadete {cadeteria.ListaCadetes[idC].Nombre}");
+                        Console.ForegroundColor = ConsoleColor.White;
 
                         do
                         {

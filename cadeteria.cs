@@ -22,11 +22,6 @@ namespace Cadeteria_space
             Telefono = tel;            
         }
 
-        public void ActualizarCadetes(List<Cadete> lcadetes)
-        {
-            ListaCadetes = lcadetes;
-        }
-
         public void AsignarPedidos()
         {
             foreach(Pedido p in pedidos)
@@ -35,14 +30,13 @@ namespace Cadeteria_space
             }
         }
 
-        public void AsignarCadeteAPedido(int idC, int nroP)
+        public Pedido AsignarCadeteAPedido(int idC, int nroP)
         {
             Pedido p = pedidos.Single(ped => ped.Nro == nroP);
             p.Estado = estados.asignado;
             p.Cadete = ListaCadetes[idC];
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"se asignó el pedido \"{p.Obs}\" al cadete {listaCadetes[idC].Nombre}");
-            Console.ForegroundColor = ConsoleColor.White;
+            
+            return p;
         }
 
 
